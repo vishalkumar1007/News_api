@@ -1,0 +1,137 @@
+.HomePage_main {
+  background-color: #000000;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.HomePage_content {
+  width: 100%;
+  /* max-width: 1050px; */
+  height: 99%;
+}
+.HomePage_content::after {
+  content: "";
+  width: 500px;
+  height: 220px;
+  position: absolute;
+  background-color: #430298cf;
+  top: 220px;
+  left: 200px;
+  filter: blur(300px);
+  z-index: 1;
+}
+.HomePage_content::before {
+  content: "";
+  width: 500px;
+  height: 220px;
+  position: absolute;
+  background-color: #72033ed1;
+  bottom: 200px;
+  right: 200px;
+  filter: blur(300px);
+  z-index: 1;
+}
+
+.Search_filter {
+  width: 100%;
+  height: 8%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #2d2d2d;
+  z-index: 1;
+}
+.Search_left {
+  /* background-color: rgb(226, 156, 43); */
+  width: 50%;
+  height: 100%;
+  /* border: 0.5px solid gray; */
+}
+.Search_right {
+  /* background-color: blueviolet; */
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  /* border: 0.5px solid gray; */
+  z-index: 5;
+}
+
+.Search_right input {
+  width: 70%;
+  height: 30px;
+  border: none;
+}
+.Search_right #search_btn {
+  width: 10%;
+  height: 30px;
+  border: none;
+}
+
+/* ............................  */
+
+.news_component {
+  width: 100%;
+  height: 82%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.range_news_component {
+  width: 100%;
+  height: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  row-gap: 18px;
+  column-gap: 15px;
+  flex-wrap: wrap;
+  padding: 20px 10px;
+  box-sizing: border-box;
+  overflow: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  z-index: 2;
+}
+
+/* .news_component::-webkit-scrollbar {
+    display: none; 
+} */
+
+.news_pagination {
+  background-color: #000000;
+  width: 100%;
+  height: 10%;
+  z-index: 5;
+}
+
+@media only screen and (max-width: 768px) {
+  .HomePage_content::after {
+    content: "";
+    width: 120px;
+    height: 350px;
+    position: absolute;
+    background-color: #430298e0;
+    top: 220px;
+    left: 80px;
+    filter: blur(190px);
+    z-index: 1;
+  }
+  .HomePage_content::before {
+    content: "";
+    width: 120px;
+    height: 350px;
+    position: absolute;
+    background-color: #72033ed1;
+    bottom: 200px;
+    right: 80px;
+    filter: blur(190px);
+    z-index: 1;
+  }
+}
