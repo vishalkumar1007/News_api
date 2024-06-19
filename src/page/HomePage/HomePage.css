@@ -78,6 +78,36 @@
   border: 0.2px solid rgb(85, 85, 85);
 }
 
+.slider:after {
+  position: absolute;
+  content: "Switch for set categories or filter";
+  height: 42px;
+  width: 120px;
+  left: 120%;
+  bottom: -10px;
+  background-color: #16161620;
+  z-index: 10;
+  border-radius: 6px;
+  color: #c7c7c7bc;
+  border: 2px solid #91909191;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+  padding: 5px;
+  box-sizing: border-box;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(0);
+  transition: all 0.5s ease-in-out;
+}
+
+.slider:hover:after {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
 .slider:before {
   position: absolute;
   content: "";
@@ -228,6 +258,7 @@ input:checked + .slider:before {
 }
 .pgn .MuiPaginationItem-root {
   color: #c9c9c9;
+
 }
 
 @media only screen and (max-width: 768px) {
@@ -253,4 +284,19 @@ input:checked + .slider:before {
     filter: blur(190px);
     z-index: 1;
   }
+  .slider:after {
+
+    left: -25%;
+    top: 30px;
+    opacity: 0;
+    transform: translateX(0);
+    background-color: #000000;
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .slider:hover:after {
+    opacity: 1;
+    transform: translateX(5px);
+  }
+
 }

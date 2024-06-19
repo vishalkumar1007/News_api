@@ -8,31 +8,59 @@ import Pagination from '@mui/material/Pagination';
 function HomePage() {
     const [apiData, setApiData] = useState([]);
     const [isChecked, setIsChecked] = useState(false);
-    const [catagoriesInput, setCatagoriesInput] = useState('all');
+    const [categoriesInput, setCategoriesInput] = useState('all');
+    const [filterData, setFilterData] = useState([]);
+    const [paginationLength, setPaginationLength] = useState(1);
+    const [paginationFilterData, setPaginationFilterData] = useState([]);
+    const [currentPage , setCurrentPage] = useState(1);
+
+    const fetchData = async (category) => {
+        const api = `https://newsapi.org/v2/everything?q=${category}&apiKey=61e32eb2e9b34e00a29111d802b7d329`;
+        try {
+            const response = await axios.get(api);
+            setApiData(response.data.articles);
+            setFilterData(response.data.articles);
+        } catch (error) {
+            console.error('API error:', error);
+            if (error.message === 'Network Error') {
+                alert('You are Offline')
+            }
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            const api = catagoriesInput === 'all' ? `https://newsapi.org/v2/everything?q=all&apiKey=61e32eb2e9b34e00a29111d802b7d329` : `https://newsapi.org/v2/everything?q=${catagoriesInput}&apiKey=61e32eb2e9b34e00a29111d802b7d329`;
+        fetchData(categoriesInput);
+    }, [categoriesInput]);
 
-            try {
-                const response = await axios.get(api);
-                setApiData(response.data.articles);
-            } catch (error) {
-                console.error('API error:', error);
-            }
-        };
+    useEffect(() => {
+        const lenOfData = filterData.length;
+        const perPage = 10;
+        const total_page = lenOfData > perPage ? Math.ceil(lenOfData / perPage) : 1;
+        setPaginationLength(total_page);
+        getPaginationValue(null, 1);
+    }, [filterData]);
 
-        fetchData();
-    }, [catagoriesInput]);
-
-    // Handle checkbox change
     const handleCheckboxChange = (event) => {
         setIsChecked(event.target.checked);
     };
 
-    // Handle category selection set
     const handleCategorySet = () => {
-        setCatagoriesInput(document.getElementById('catagoriesUserInput').value);
+        setCategoriesInput(document.getElementById('categoriesUserInput').value);
+        setCurrentPage(1);
+    };
+
+    const filterNews = (event) => {
+        const value = event.target.value.toLowerCase();
+        const filtered = value ? apiData.filter(article => article.title.toLowerCase().includes(value)) : apiData;
+        setFilterData(filtered);
+    };
+
+    const getPaginationValue = (event, page = 1) => {
+        const itemsPerPage = 10;
+        const startIndex = (page - 1) * itemsPerPage;
+        const limitData = filterData.slice(startIndex, startIndex + itemsPerPage);
+        setPaginationFilterData(limitData);
+        setCurrentPage(page);
     };
 
     return (
@@ -50,20 +78,15 @@ function HomePage() {
                         </label>
                     </div>
 
-                    {!isChecked && (
+                    {!isChecked ? (
                         <div className='Search_right'>
-                            <input className="search-input" type="search" placeholder="Filter news with key word" aria-label="Search Key" />
-                            <button className="search-button" type="submit">Search</button>
+                            <input className="search-input" type="search" placeholder="Filter news with keyword" aria-label="Search Key" onChange={filterNews} />
                         </div>
-                    )}
-
-                    {isChecked && (
-                        <div className='Search_right catagories'>
-                            <select className="dropdown-input" id="catagoriesUserInput">
-                                <option value="all"  hidden>
-                                    {
-                                        catagoriesInput==='all'? 'Select news catagories':catagoriesInput
-                                    }
+                    ) : (
+                        <div className='Search_right categories'>
+                            <select className="dropdown-input" id="categoriesUserInput">
+                                <option value="all" hidden>
+                                    {categoriesInput === 'all' ? 'Select news categories' : categoriesInput}
                                 </option>
                                 <option value="all">all</option>
                                 <option value="world">world</option>
@@ -76,26 +99,23 @@ function HomePage() {
                             <button className="search-button" type="submit" onClick={handleCategorySet}>Set</button>
                         </div>
                     )}
-
                 </div>
                 <div className="news_component">
                     <div className='range_news_component'>
-                        {
-                            apiData.length === 0 ? <NewsCard /> : apiData.map((article, index) => (
-                                <NewsCard
-                                    key={index}
-                                    title={article.title}
-                                    publishedAt={article.publishedAt}
-                                    url={article.url}
-                                    urlToImage={article.urlToImage}
-                                    content={article.content}
-                                />
-                            ))
-                        }
+                        {paginationFilterData.length === 0 ? <NewsCard /> : paginationFilterData.map((article, index) => (
+                            <NewsCard
+                                key={index}
+                                title={article.title}
+                                publishedAt={article.publishedAt}
+                                url={article.url}
+                                urlToImage={article.urlToImage}
+                                content={article.content}
+                            />
+                        ))}
                     </div>
                 </div>
                 <div className='news_pagination'>
-                    <Pagination className='pgn' count={5} shape="rounded" variant="outlined" color="primary" />
+                    <Pagination className='pgn' count={paginationLength} page={currentPage} shape="rounded" variant="outlined" color="primary" onChange={(event, page) => getPaginationValue(event, page)} />
                 </div>
             </div>
         </div>
