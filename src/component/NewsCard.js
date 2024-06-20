@@ -9,7 +9,7 @@ function NewsCard({ uniqueKey, title, publishedAt, url, urlToImage, content }) {
   const [liked, setLiked] = useState(false);
   // const [localToSet, setLocalToSet] = useState(null);
 
-  const SaveNews = () => {
+  const SaveNews = async() => {
     setLiked(!liked);
     if(!liked){
       handelLocalStorageToSet();
@@ -52,6 +52,9 @@ function NewsCard({ uniqueKey, title, publishedAt, url, urlToImage, content }) {
   }
 
   useEffect(()=>{
+    if (!localStorage.getItem('userLikeData')) {
+      localStorage.setItem('userLikeData', JSON.stringify({}));
+    }
     const likedData = localStorage.getItem('userLikeData');
     const parsedLikedData = JSON.parse(likedData);
     if(parsedLikedData[uniqueKey]){
