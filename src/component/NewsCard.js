@@ -1,5 +1,5 @@
 import './NewsCard.css'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // import PropTypes from 'prop-types';
 import default_image from '../default_image.png'
 
@@ -39,26 +39,28 @@ function NewsCard({ uniqueKey, title, publishedAt, url, urlToImage, content }) {
   }
 
   const handelLocalStorageToRemove=()=>{
-    console.log('stage 1');
     const likedData = localStorage.getItem('userLikeData');
-    console.log('stage 2');
     if(likedData){
-      console.log('stage 3');
       const parsedLikedData = JSON.parse(likedData);
-      console.log('stage 4');
       if(parsedLikedData[uniqueKey]){
-        console.log('stage 5');
         delete parsedLikedData[uniqueKey];
-        console.log('stage 6');
         localStorage.setItem('userLikeData',JSON.stringify(parsedLikedData))
       }else{
-        console.log('stage 7');
         console.log('Liked data not found for uniqueKey:', uniqueKey);
-        console.log('stage 8');
       }
-      console.log('stage 9');
     }
   }
+
+  useEffect(()=>{
+    const likedData = localStorage.getItem('userLikeData');
+    const parsedLikedData = JSON.parse(likedData);
+    if(parsedLikedData[uniqueKey]){
+      setLiked(true);
+    }else{
+      setLiked(false);
+    }
+
+  },[uniqueKey,liked])
 
 
   return (
@@ -105,12 +107,5 @@ function NewsCard({ uniqueKey, title, publishedAt, url, urlToImage, content }) {
   );
 }
 
-// NewsCard.propTypes = {
-//     title: PropTypes.string.isRequired,
-//     publishedAt: PropTypes.string,
-//     url: PropTypes.string.isRequired,
-//     urlToImage: PropTypes.string,
-//     content: PropTypes.string,
-// };
 
 export default NewsCard;

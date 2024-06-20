@@ -4,7 +4,6 @@ import './HomePage.css';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import Pagination from '@mui/material/Pagination';
-import { v4 as uuidv4 } from 'uuid';
 
 function HomePage() {
     const [apiData, setApiData] = useState([]);
@@ -66,9 +65,6 @@ function HomePage() {
         setCurrentPage(page);
     };
 
-    const getUniqueKey = ()=>{
-        return uuidv4();
-    }
 
     return (
         <div className="HomePage_main">
@@ -111,8 +107,8 @@ function HomePage() {
                     <div className='range_news_component'>
                         {paginationFilterData.length === 0 ? <NewsCard /> : paginationFilterData.map((article, index) => (
                             <NewsCard
-                                key={getUniqueKey()}
-                                uniqueKey = {getUniqueKey()}
+                                key={article.url}
+                                uniqueKey = {article.url}
                                 title={article.title}
                                 publishedAt={article.publishedAt}
                                 url={article.url}
