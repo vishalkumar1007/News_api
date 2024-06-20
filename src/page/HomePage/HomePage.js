@@ -4,6 +4,7 @@ import './HomePage.css';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import Pagination from '@mui/material/Pagination';
+import { v4 as uuidv4 } from 'uuid';
 
 function HomePage() {
     const [apiData, setApiData] = useState([]);
@@ -24,6 +25,8 @@ function HomePage() {
             console.error('API error:', error);
             if (error.message === 'Network Error') {
                 alert('You are Offline')
+            }else{
+                alert(error.message);
             }
         }
     };
@@ -62,6 +65,10 @@ function HomePage() {
         setPaginationFilterData(limitData);
         setCurrentPage(page);
     };
+
+    const getUniqueKey = ()=>{
+        return uuidv4();
+    }
 
     return (
         <div className="HomePage_main">
@@ -104,7 +111,8 @@ function HomePage() {
                     <div className='range_news_component'>
                         {paginationFilterData.length === 0 ? <NewsCard /> : paginationFilterData.map((article, index) => (
                             <NewsCard
-                                key={index}
+                                key={getUniqueKey()}
+                                uniqueKey = {getUniqueKey()}
                                 title={article.title}
                                 publishedAt={article.publishedAt}
                                 url={article.url}
