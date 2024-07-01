@@ -15,7 +15,8 @@ function HomePage() {
     const [currentPage , setCurrentPage] = useState(1);
 
     const fetchData = async (category) => {
-        const api = `https://newsapi.org/v2/everything?q=${category}&apiKey=61e32eb2e9b34e00a29111d802b7d329`;
+        // const api = `https://newsapi.org/v2/everything?q=${category}&apiKey=61e32eb2e9b34e00a29111d802b7d329`;
+        const api = `https://news-api-serverr.vercel.app/api/getNewsFromVishalServer?category=${category}`;
         try {
             const response = await axios.get(api);
             setApiData(response.data.articles);
