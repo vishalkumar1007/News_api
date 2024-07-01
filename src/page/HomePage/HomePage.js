@@ -1,7 +1,8 @@
+// const api = `https://newsapi.org/v2/everything?q=${category}&apiKey=61e32eb2e9b34e00a29111d802b7d329`;
 import * as React from 'react';
 import NewsCard from "../../component/NewsCard";
 import './HomePage.css';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from 'axios';
 import Pagination from '@mui/material/Pagination';
 
@@ -12,10 +13,9 @@ function HomePage() {
     const [filterData, setFilterData] = useState([]);
     const [paginationLength, setPaginationLength] = useState(1);
     const [paginationFilterData, setPaginationFilterData] = useState([]);
-    const [currentPage , setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const fetchData = async (category) => {
-        // const api = `https://newsapi.org/v2/everything?q=${category}&apiKey=61e32eb2e9b34e00a29111d802b7d329`;
         const api = `https://news-api-serverr.vercel.app/api/getNewsFromVishalServer?category=${category}`;
         try {
             const response = await axios.get(api);
@@ -25,7 +25,7 @@ function HomePage() {
             console.error('API error:', error);
             if (error.message === 'Network Error') {
                 alert('You are Offline')
-            }else{
+            } else {
                 alert(error.message);
             }
         }
@@ -35,13 +35,22 @@ function HomePage() {
         fetchData(categoriesInput);
     }, [categoriesInput]);
 
+    const updatePaginationFilterData = useCallback((page) => {
+        const itemsPerPage = 10;
+        const startIndex = (page - 1) * itemsPerPage;
+        const limitData = filterData.slice(startIndex, startIndex + itemsPerPage);
+        setPaginationFilterData(limitData);
+        setCurrentPage(page);
+    }, [filterData]);
+
     useEffect(() => {
         const lenOfData = filterData.length;
         const perPage = 10;
         const total_page = lenOfData > perPage ? Math.ceil(lenOfData / perPage) : 1;
         setPaginationLength(total_page);
-        getPaginationValue(null, 1);
-    }, [filterData]);
+        setCurrentPage(1); 
+        updatePaginationFilterData(1); 
+    }, [filterData, updatePaginationFilterData]);
 
     const handleCheckboxChange = (event) => {
         setIsChecked(event.target.checked);
@@ -49,7 +58,7 @@ function HomePage() {
 
     const handleCategorySet = () => {
         setCategoriesInput(document.getElementById('categoriesUserInput').value);
-        setCurrentPage(1);
+        setCurrentPage(1); // Reset page to 1 when category changes
     };
 
     const filterNews = (event) => {
@@ -57,15 +66,6 @@ function HomePage() {
         const filtered = value ? apiData.filter(article => article.title.toLowerCase().includes(value)) : apiData;
         setFilterData(filtered);
     };
-
-    const getPaginationValue = (event, page = 1) => {
-        const itemsPerPage = 10;
-        const startIndex = (page - 1) * itemsPerPage;
-        const limitData = filterData.slice(startIndex, startIndex + itemsPerPage);
-        setPaginationFilterData(limitData);
-        setCurrentPage(page);
-    };
-
 
     return (
         <div className="HomePage_main">
@@ -109,7 +109,7 @@ function HomePage() {
                         {paginationFilterData.length === 0 ? <NewsCard /> : paginationFilterData.map((article, index) => (
                             <NewsCard
                                 key={article.url}
-                                uniqueKey = {article.url}
+                                uniqueKey={article.url}
                                 title={article.title}
                                 publishedAt={article.publishedAt}
                                 url={article.url}
@@ -120,7 +120,7 @@ function HomePage() {
                     </div>
                 </div>
                 <div className='news_pagination'>
-                    <Pagination className='pgn' count={paginationLength} page={currentPage} shape="rounded" variant="outlined" color="primary" onChange={(event, page) => getPaginationValue(event, page)} />
+                    <Pagination className='pgn' count={paginationLength} page={currentPage} shape="rounded" variant="outlined" color="primary" onChange={(event, page) => updatePaginationFilterData(page)} />
                 </div>
             </div>
         </div>
