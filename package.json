@@ -1,7 +1,7 @@
 {
   "name": "news_api",
   "version": "0.1.0",
-  "homepage": "https://vishalkumar07.me/React_weather_and_two_Api_App",
+  "homepage": "https://vishalkumar07.me/News_api",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
